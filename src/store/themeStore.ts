@@ -4,7 +4,8 @@ import { persist } from 'zustand/middleware';
 
 export type ThemeName = 'encontro_rios' | 'floresta' | 'por_do_sol';
 
-interface Theme {
+// A CORREÇÃO ESTÁ AQUI: Adicionamos a palavra 'export'
+export interface Theme {
   name: ThemeName;
   background: string;
   primary: string;
@@ -44,7 +45,7 @@ export const useThemeStore = create<ThemeState>()(
       setTheme: (themeName) => set({ activeTheme: themes[themeName] }),
     }),
     {
-      name: 'iara-theme-storage', // Chave para salvar no localStorage
+      name: 'iara-theme-storage',
     }
   )
 );

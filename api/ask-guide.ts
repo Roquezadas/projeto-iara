@@ -1,7 +1,8 @@
 // api/ask-guide.ts
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { loadEnv } from 'vite';
+
+// Não precisamos mais do 'loadEnv' do Vite aqui
 
 export default async function handler(
   req: VercelRequest,
@@ -17,10 +18,14 @@ export default async function handler(
       return res.status(400).json({ error: 'Nome do local e pergunta são obrigatórios.' });
     }
 
-    const env = loadEnv(process.env.NODE_ENV as string, process.cwd(), '');
-    const API_KEY = env.VITE_GEMINI_API_KEY;
+    // --- A CORREÇÃO DEFINITIVA ESTÁ AQUI ---
+    // Em produção, a Vercel injeta as variáveis de ambiente diretamente no 'process.env'.
+    // Este é o método padrão e mais robusto para um ambiente de servidor.
+    const API_KEY = process.env.VITE_GEMINI_API_KEY;
+
     if (!API_KEY) {
-      throw new Error("Chave da API do Gemini não configurada no servidor.");
+      // Esta mensagem de erro agora será mais clara no log da Vercel
+      throw new Error("ERRO DE SERVIDOR: A variável de ambiente VITE_GEMINI_API_KEY não foi encontrada no ambiente de produção da Vercel.");
     }
     
     const genAI = new GoogleGenerativeAI(API_KEY);
@@ -42,7 +47,7 @@ export default async function handler(
     return res.status(200).json({ answer });
 
   } catch (error: any) {
-    console.error('[API_ERROR /api/ask-guide]', error);
-    return res.status(500).json({ error: 'Desculpe, não consegui encontrar a resposta agora.' });
+    console.error('[ERRO NA API /api/ask-guide]', error);
+    return res.status(500).json({ error: error.message || 'Desculpe, não consegui encontrar a resposta agora.' });
   }
 }
