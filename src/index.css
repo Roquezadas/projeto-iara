@@ -1,3 +1,21 @@
+/* src/index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ESTILOS PERSONALIZADOS PARA O POPUP DO MAPA */
+.custom-popup .leaflet-popup-content-wrapper {
+  @apply bg-slate-800/80 backdrop-blur-md border border-slate-600/50 text-white rounded-lg shadow-lg p-0;
+}
+
+.custom-popup .leaflet-popup-content {
+  @apply font-sans m-3; /* Usamos a nossa fonte padrão */
+}
+
+.custom-popup .leaflet-popup-tip {
+  @apply bg-slate-800/80;
+}
+
+.custom-popup .leaflet-popup-close-button {
+  @apply text-white/70 hover:text-white;
+}
