@@ -1,7 +1,8 @@
-// api/ask-guide.cts
+// api/ask-guide.ts
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
+// Com a configuração correta do tsconfig, process.env é a forma robusta
 const API_KEY = process.env.VITE_GEMINI_API_KEY;
 
 export default async function handler(
@@ -13,7 +14,7 @@ export default async function handler(
   }
 
   if (!API_KEY) {
-    console.error("ERRO GRAVE: A chave da API do Gemini não está configurada.");
+    console.error("Vercel PROD Error: Chave da API do Gemini não encontrada em process.env.");
     return res.status(500).json({ error: 'Erro de configuração do servidor.' });
   }
 
@@ -27,10 +28,13 @@ export default async function handler(
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
 
     const prompt = `
-      Você é "Iara", uma guia turística historiadora, apaixonada e especialista na cidade de Manaus. Seu tom é amigável e informativo.
+      Você é "Iara", uma guia turística historiadora, apaixonada e especialista na cidade de Manaus.
+      Seu tom é amigável, informativo e cheio de curiosidades.
       Um usuário está a visitar o local: "${locationName}".
       Ele fez a seguinte pergunta: "${question}".
-      Responda à pergunta de forma concisa e interessante. Se a pergunta for fora de tópico, gentilmente o traga de volta ao assunto.
+      
+      Responda à pergunta do usuário de forma concisa e interessante, mantendo a sua persona de guia especialista.
+      Se a pergunta for fora do tópico sobre o local ou sobre a história de Manaus, gentilmente o traga de volta ao assunto.
     `;
 
     const result = await model.generateContent(prompt);
