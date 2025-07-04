@@ -1,4 +1,5 @@
 // src/store/locationsStore.ts
+//
 import { create } from 'zustand';
 
 export interface Location {
